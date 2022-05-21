@@ -1,0 +1,111 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>NatunaAPI</name>
+    </assembly>
+    <members>
+        <member name="M:NatunaAPI.Controllers.CompanyController.PostSubmitCompanyDocument(NatunaAPI.BusinessLogic.Dto.CompanyDocument)">
+            <summary>
+            Admins can add a new Company Document
+            </summary>
+            <param name="companyDocumentDTO"></param>
+            <returns></returns>
+        </member>
+        <member name="M:NatunaAPI.Controllers.CompanyController.GetAllCompanyDocuments(System.String)">
+            <summary>
+            Get all Company documents filtered
+            </summary>
+            <param name="companyDocumentsFilters"></param>
+            <returns></returns>
+        </member>
+        <member name="M:NatunaAPI.Controllers.EmployeesController.PostUploadPayrolls(NatunaAPI.BusinessLogic.Dto.UploadSession)">
+            <summary>
+            Massive loading of payrolls and CUDs from a pdf file
+            </summary>
+            <param name="uploadSession">contains the following input: pdf file, pdf file name, type (payroll or CUD), title (period)</param>
+            <returns></returns>
+        </member>
+        <member name="M:NatunaAPI.Controllers.EmployeesController.GetAllUploadSessions(System.Int32)">
+            <summary>
+            Get all the upload sessions of massive loading (payrolls or CUDs). (Massive Loading Table)
+            </summary>
+            <param name="pageNumber">page number</param>
+            <returns></returns>
+        </member>
+        <member name="M:NatunaAPI.Controllers.EmployeesController.GetUploadSession(System.Int32)">
+            <summary>
+            Get a specific upload session (Upload Session detail that appear in the popup)
+            </summary>
+            <param name="uploadSessionId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:NatunaAPI.Controllers.EmployeesController.PutUpdateDeleteUploadSession(System.Int32)">
+            <summary>
+            Delete of the upload session (physical delete)
+            </summary>
+            <param name="uploadSessionId">id of the element to be deleted</param>
+            <returns></returns>
+        </member>
+        <member name="M:NatunaAPI.Controllers.EmployeesController.GetAllEmployees(System.Int32,System.String)">
+            <summary>
+            Get All the Employees, or a specific one if searchText != ""
+            </summary>
+            <param name="pageNumber"></param>
+            <param name="searchText">can be LastName + FirstName, FiscalCode or IdentificationNumber</param>
+            <returns></returns>
+        </member>
+        <member name="M:NatunaAPI.Controllers.EmployeesController.GetEmployee(System.Int32)">
+            <summary>
+            Get a specific Employee by employeeId (employee detail)
+            </summary>
+            <param name="employeeId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:NatunaAPI.Controllers.EmployeesController.GetAllEmployeeDocuments(System.String)">
+            <summary>
+            Get All Employee Documents filtered. 
+            Admins has also the identification number/fiscal code filter.
+            </summary>
+            <param name="employeeDocumentsFilters"></param>
+            <returns></returns>
+        </member>
+        <member name="M:NatunaAPI.Controllers.EmployeesController.GetEmployeeDocument(System.Int32)">
+            <summary>
+            Download a specific Employee pdf document
+            </summary>
+            <param name="employeeDocumentId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:NatunaAPI.Controllers.EmployeesController.PostSubmitEmployeeDocument(NatunaAPI.BusinessLogic.Dto.EmployeeDocument)">
+            <summary>
+            Admins can enter a specific single document for a employee, which is neither payroll nor CUD
+            </summary>
+            <param name="employeeDocument"></param>
+            <returns></returns>
+        </member>
+        <member name="M:NatunaAPI.Controllers.TestController.TestUploadCurrent">
+            <summary>
+             elapsed time: 00:05:12.78
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:NatunaAPI.Controllers.TestController.TestUploadImproved">
+            <summary>
+             elapsed time: 00:04:08.15
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:NatunaAPI.Controllers.TestController.TestUploadNew">
+            <summary>
+             elapsed time: 00:01:25.05
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:NatunaAPI.Controllers.TestController.TestUploadNewImproved">
+            <summary>
+             elapsed time: 00:00:54.56
+            </summary>
+            <returns></returns>
+        </member>
+    </members>
+</doc>
