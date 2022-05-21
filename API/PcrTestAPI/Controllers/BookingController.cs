@@ -24,12 +24,25 @@ namespace PcrTestAPI.Controllers
         }
 
         [HttpGet]
-        //[Authorize(AuthenticationSchemes = "Bearer")]
         public async Task<ActionResult<List<Venue>>> GetVenues()
         {
             try
             {
                 return await this.bookingDA.GetVenues();
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex.Message);
+                return StatusCode(500);
+            }
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<List<Booking>>> GetBookingsByIdentityCardNumber(string IdentityCardNumber)
+        {
+            try
+            {
+                return await this.bookingDA.GetBookingsByIdentityCardNumber(IdentityCardNumber);
             }
             catch (Exception ex)
             {

@@ -1,0 +1,217 @@
+html {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    height: 86%;
+    background-color: white;
+}
+
+div#root {
+    position: relative;
+    height: auto;
+    min-height: 100%;
+}
+
+@media only screen and (min-width: 767px) {
+  div#mobileNav {
+      display: none !important;
+  }
+}
+
+main#main {
+  margin-left: 200px !important;
+}
+@media only screen and (max-width: 767px) {
+  div#leftMenu {
+      display: none !important;
+  }
+  main#main {
+    margin-left: 0px !important;
+  }
+}
+
+.leftMenuItem{
+    padding: 15px 5px 15px 5px !important;
+    height: auto; 
+    padding: 3px; 
+    position: relative;
+    background-color: #5c6670;
+    transition: all 300ms;
+}
+.leftMenuItem:hover {
+    background-color: #4e565e;
+}
+
+div#footer {
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+    background-color: #ffffff; /*background-color:#e4e5e6;*/
+    padding-bottom: 20px;
+    padding-left: 20px;
+}
+
+.customButton{
+    background-color: #428bca !important;
+    color: #ffffff !important;
+    border: 1px solid #CED4DA !important;
+    font-size: 14px !important;
+    padding-left: 15px !important;
+    padding-right: 15px !important;
+    font-weight: 500 !important;
+}
+.customButton:hover {
+    background-color: #357ebd !important;
+}
+
+.customButtonDisconnetti{
+    background-color: #6c757d !important;
+    color: #ffffff !important;
+    border: 1px solid #CED4DA !important;
+    font-size: 14px !important;
+    padding-left: 15px !important;
+    padding-right: 15px !important;
+    font-weight: 500 !important;
+}
+.customButtonDisconnetti:hover {
+    background-color: #5A6268 !important;
+}
+
+.customButtonDanger{
+    background-color: #DC3545 !important;
+    color: #ffffff !important;
+    border: 1px solid #CED4DA !important;
+    font-size: 14px !important;
+    padding-left: 15px !important;
+    padding-right: 15px !important;
+    font-weight: 500 !important;
+}
+.customButtonDanger:hover {
+    background-color: rgba(190, 53, 69) !important;
+}
+
+.customTab{
+    background-color:#EEEFEF !important;
+    cursor: pointer;
+    color: #5A6268 !important;
+    border: 1px solid #CED4DA !important;
+    border-radius: 5px 5px 0px 0px !important;
+    font-size: 14px !important;
+    padding-left: 15px !important;
+    padding-right: 15px !important;
+    font-weight: 500 !important;
+    margin-right: 0px;
+}
+.customTabActive{
+    background-color: #e3e3e3 !important;
+    cursor: pointer;
+    color: #000000 !important;
+    border: 1px solid #CED4DA !important;
+    border-radius: 5px 5px 0px 0px !important;
+    font-size: 14px !important;
+    padding-left: 15px !important;
+    padding-right: 15px !important;
+    font-weight: 500 !important;
+    margin-right: 0px;
+}
+.customTab:hover {
+    background-color:#e3e3e3 !important;
+}
+
+
+.customButtonToDownload{
+    background-color:#428bca !important;
+    color: #ffffff !important;
+    border: 1px solid #CED4DA !important;
+    font-size: 14px !important;
+    padding-left: 15px !important;
+    padding-right: 15px !important;
+    font-weight: 500 !important;
+}
+.customButtonToDownload:hover {
+    background-color: #357ebd !important;
+}
+
+.customButtonDownloaded{
+    background-color: #629c44 !important;
+    color: #ffffff !important;
+    border: 1px solid #CED4DA !important;
+    font-size: 14px !important;
+    padding-left: 15px !important;
+    padding-right: 15px !important;
+    font-weight: 500 !important;
+}
+.customButtonDownloaded:hover {
+    background-color:#489c44 !important;
+}
+
+.customButtonRight{
+    float: right;
+}
+@media only screen and (max-width: 575px) {
+    .customButtonRight{
+        float: left;
+    }
+}
+
+div.box-shadows {
+    background-color: white;
+    -webkit-box-shadow: 4px 4px 14px -2px rgba(122, 163, 163, 1);
+    -moz-box-shadow: 4px 4px 14px -2px rgba(122, 163, 163, 1);
+    box-shadow: 4px 4px 14px -2px rgba(122, 163, 163, 1);
+}
+
+.spinner:before {
+    z-index: 1000;
+    content: "";
+    box-sizing: border-box;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    height: 90px;
+    width: 90px;
+    margin-top: -30px;
+    margin-left: -30px;
+    border-radius: 50%;
+    border: 4px solid lightgray;
+    border-top-color: #0A6EB4;
+    animation: spinner 0.7s linear infinite;
+}
+
+@keyframes spinner {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+
+/******* Date Picker react-dates *******/
+.CalendarDay__selected {
+    background: #007bff !important;
+}
+.CalendarDay__hovered_span {
+    background: #dfefff !important;
+    border: 1px double #e4e7e7 !important;
+}
+.CalendarDay__selected_span {
+    background: #dfefff !important;
+    border: 1px double #e4e7e7 !important;
+}
+.DateInput_input__focused {
+    border-bottom: 2px solid #007bff !important;
+}
+@media only screen and (max-width: 350px) {
+    .SingleDatePicker_picker {
+        display: none;
+    }
+    .DateRangePicker_picker {
+        display: none;
+    }
+    .DateInput_fang {
+        display: none;
+    }
+}
+/*---------------------------------*/

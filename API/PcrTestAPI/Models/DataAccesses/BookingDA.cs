@@ -28,5 +28,28 @@ namespace PcrTestAPI.Models.DataAccesses
                 Name = cdt.Name
             }).ToListAsync();
         }
+
+        public async Task<List<Booking>> GetBookingsByIdentityCardNumber(string IdentityCardNumber)
+        {
+            return await (from b in context.PcrTestBookings
+                          join s in context.PcrTestBookingStatuses on b.PcrTestBookingStatusId equals s.PcrTestBookingStatusId
+                          join a in context.PcrTestVenueAllocations on b.PcrTestVenueAllocationId equals a.PcrTestVenueAllocationId
+                          join r in context.PcrTestResults on b.PcrTestResultId equals r.PcrTestResultId
+                          join v in context.PcrTestVenues on a.PcrTestVenueId equals v.PcrTestVenueId
+                          join rt in context.PcrTestResultTypes on r.PcrTestResultTypeId equals rt.PcrTestResultTypeId
+
+                          where b.IdentityCardNumber == IdentityCardNumber
+
+                          select new Booking
+                          {
+                              BookingId = b.PcrTestBookingId,
+                              Date = a.AllocationDate,
+                              Venue = v.Code + " - " + v.Name,
+                              Status = s.Name,
+                              LastChange = b.ModifiedDate,
+                              Result = rt.Name,
+                              ResultDate = r.ResultDate
+                          }).ToListAsync();
+        }
     }
 }
