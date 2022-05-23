@@ -44,12 +44,12 @@ namespace PcrTestAPI.Models.DataAccesses
                           select new Booking
                           {
                               BookingId = b.PcrTestBookingId,
-                              Date = a.AllocationDate,
+                              Date = a.AllocationDate.ToString("dd/MM/yyyy"),
                               Venue = v.Code + " - " + v.Name,
                               Status = s.Name,
-                              LastChange = b.ModifiedDate,
+                              LastChange = b.ModifiedDate.ToString("dd/MM/yyyy"),
                               Result = rt.Name,
-                              ResultDate = r.ResultDate
+                              ResultDate = r.ResultDate.ToString("dd/MM/yyyy"),
                           }).ToListAsync();
         }
 
@@ -180,6 +180,20 @@ namespace PcrTestAPI.Models.DataAccesses
             context.Set<PcrTestBooking>().Add(technicalExpertAttachmentInfo);
             //context.PcrTestBookings.Add(technicalExpertAttachmentInfo);
             await context.SaveChangesAsync();
+        }
+
+        public async Task<int> DeleteBooking(int BookingId)
+        {
+            PcrTestBooking pcrTestBooking = await context.Set<PcrTestBooking>().Where(cd => cd.PcrTestBookingId == BookingId).SingleOrDefaultAsync();
+
+            PcrTestVenueAllocation pcrTestVenueAllocation = await context.Set<PcrTestVenueAllocation>().Where(cd => cd.PcrTestVenueAllocationId == pcrTestBooking.PcrTestVenueAllocationId).SingleOrDefaultAsync();
+            PcrTestResult pcrTestResult = await context.Set<PcrTestResult>().Where(cd => cd.PcrTestResultId == pcrTestBooking.PcrTestResultId).SingleOrDefaultAsync();
+
+            context.Set<PcrTestVenueAllocation>().Remove(pcrTestVenueAllocation);
+            context.Set<PcrTestResult>().Remove(pcrTestResult);
+            context.Set<PcrTestBooking>().Remove(pcrTestBooking);
+
+            return await context.SaveChangesAsync();
         }
     }
 }

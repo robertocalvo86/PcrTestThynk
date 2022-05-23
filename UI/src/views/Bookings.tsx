@@ -13,7 +13,7 @@ import {
 
 import { NoticeListItem, NoticesFilters, UserIdentity, BookingListItem } from '../interfaces';
 import { setNotification } from '../service/IdentityUsers';
-import { deleteNotice, getAllNotices_mod } from '../service/Companies';
+import { deleteNotice, getAllNotices_mod, deleteBooking } from '../service/Companies';
 
 // You can see all icons here: https://icons.getbootstrap.com/
 import * as Icon from 'react-bootstrap-icons';
@@ -76,14 +76,15 @@ const Bookings = props => {
     }, []);
 
     const onDeleteNotice = async (idx) => {
-        let companyDocument = NoticesState[idx];
-        let result = await deleteNotice(__dispatch, companyDocument.noticeId);
+        let companyDocument = NoticesStatemod[idx];
+
+        let result = await deleteBooking(__dispatch, companyDocument.bookingId);
         if (result) {
-            let data = [...NoticesState];
+            let data = [...NoticesStatemod];
             data.splice(idx, 1);
-            setNoticesState(data);
+            setNoticesStatemod(data);
             toggleBtnDeleteNotice(idx);
-            setNotification(__dispatch, "success", [{ code: "0000", description: "Avviso eliminato" }]);
+            setNotification(__dispatch, "success", [{ code: "0000", description: "Booking Deleted Succesfully" }]);
         }
     }
 
@@ -130,12 +131,12 @@ const Bookings = props => {
                 <Modal isOpen={viewConfirmPopUp} toggle={toggleBtnDeleteNotice} backdrop="static">
                     <ModalBody>
                         <Label style={{ fontSize: 'medium' }}>
-                            <strong> Sei sicuro di voler eliminare l'avviso selezionato?</strong>
+                            <strong> Are you sure you want to delete the selected booking?</strong>
                         </Label>
                     </ModalBody>
                     <ModalFooter>
-                        <Button className="customButtonDanger" onClick={() => onDeleteNotice(itemToDeleteIdx)} ><Icon.Trash style={{ verticalAlign: "-2px" }} />{' '}Elimina</Button> {' '}
-                        <Button className="customButton" onClick={() => toggleBtnDeleteNotice(itemToDeleteIdx)} >No</Button>
+                        <Button className="customButtonDanger" onClick={() => onDeleteNotice(itemToDeleteIdx)} ><Icon.Trash style={{ verticalAlign: "-2px" }} />{' '}Delete</Button> {' '}
+                        <Button className="customButton" onClick={() => toggleBtnDeleteNotice(itemToDeleteIdx)} >Close</Button>
                     </ModalFooter>
                 </Modal>
             </>

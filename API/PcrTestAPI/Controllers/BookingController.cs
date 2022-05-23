@@ -94,5 +94,19 @@ namespace PcrTestAPI.Controllers
                 return StatusCode(500);
             }
         }
+
+        [HttpDelete]
+        public async Task<ActionResult<int>> DeleteBooking(int BookingId)
+        {
+            try
+            {
+                return await this.bookingDA.DeleteBooking(BookingId);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex.Message);
+                return StatusCode(500);
+            }
+        }
     }
 }

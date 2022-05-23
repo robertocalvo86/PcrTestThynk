@@ -45,6 +45,38 @@ const submitCompanyDocument = async (dispatch, companyDocumentDTO) => {
     return result;
 }
 
+const deleteBooking = async (dispatch, BookingId) => {
+    let usrIden = sessionStorage.getItem('user');
+    if (!usrIden) {
+        setNotification(dispatch, "danger", [{ code: "0000", description: "Utente non autorizzato" }]);
+        return null;
+    }
+
+    let ui = JSON.parse(usrIden);
+    let result = null;
+
+    //axios.defaults.headers.common['Authorization'] = `Bearer ${ui.token}`;
+    await axios.delete(applicationDomain + `/api/Booking/DeleteBooking?BookingId=${BookingId}`)
+        .then(response => {
+            if (response.status === 200) {
+                result = response.data;
+            }
+        })
+        .catch(error => {
+            if (!error.response) {
+                setNotification(dispatch, "danger", [{ code: "0000", description: "Impossibile connettersi al servizio web" }]);
+            }
+            else if (error.response.status === 401) {
+                setNotification(dispatch, "danger", [{ code: "0000", description: "Utente non autorizzato" }]);
+            }
+            else if (error.response.status === 500) {
+                setNotification(dispatch, "danger", [{ code: "0000", description: "Problemi interni al servizio web" }]);
+            }
+        });
+
+    return result;
+}
+
 const getAllCompanyDocuments = async (dispatch, companyDocumentsFilters): Promise<CompanyDocumentList | null> => {
     let usrIden = sessionStorage.getItem('user');
     if (!usrIden) {
@@ -493,4 +525,4 @@ const deleteNotice = async (dispatch, noticeId) => {
     return result;
 }
 
-export { submitCompanyDocument, getAllCompanyDocuments, getCompanyDocument, getCompanyDocumentCategories, deleteCompanyDocument, submitNotice, getAllNotices, getNotice, deleteNotice, getAllNotices_mod, getVenues, getBookingDates, getBookingTimes };
+export { submitCompanyDocument, getAllCompanyDocuments, getCompanyDocument, getCompanyDocumentCategories, deleteCompanyDocument, submitNotice, getAllNotices, getNotice, deleteNotice, getAllNotices_mod, getVenues, getBookingDates, getBookingTimes, deleteBooking };
