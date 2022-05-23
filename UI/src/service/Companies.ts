@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { setNotification } from './IdentityUsers';
-import { CompanyDocumentList, CompanyDocumentCategory, NoticeList, BookingListItem } from '../interfaces';
+import { CompanyDocumentList, CompanyDocumentCategory, NoticeList, BookingListItem, Venue } from '../interfaces';
 
 let applicationDomain = "";
 
@@ -18,10 +18,11 @@ const submitCompanyDocument = async (dispatch, companyDocumentDTO) => {
     }
 
     let ui = JSON.parse(usrIden);
+    companyDocumentDTO.IdentityCardNumber = ui.IdentityCardNumber;
     let result = false;
 
-    axios.defaults.headers.common['Authorization'] = `Bearer ${ui.token}`;
-    await axios.post(applicationDomain + `/api/Company/PostSubmitCompanyDocument`, companyDocumentDTO)
+    //axios.defaults.headers.common['Authorization'] = `Bearer ${ui.token}`;
+    await axios.post(applicationDomain + `/api/Booking/PostBooking`, companyDocumentDTO)
         .then(response => {
             if (response.status === 204) {
                 result = true;
@@ -97,6 +98,102 @@ const getCompanyDocument = async (dispatch, companyDocumentId, name) => {
             document.body.appendChild(link);
             link.click();
             result = true;
+        })
+        .catch(error => {
+            if (!error.response) {
+                setNotification(dispatch, "danger", [{ code: "0000", description: "Impossibile connettersi al servizio web" }]);
+            }
+            else if (error.response.status === 401) {
+                setNotification(dispatch, "danger", [{ code: "0000", description: "Utente non autorizzato" }]);
+            }
+            else if (error.response.status === 500) {
+                setNotification(dispatch, "danger", [{ code: "0000", description: "Problemi interni al servizio web" }]);
+            }
+        });
+
+    return result;
+}
+
+const getBookingDates = async (dispatch, venueId): Promise<string[] | null> => {
+    let usrIden = sessionStorage.getItem('user');
+    if (!usrIden) {
+        setNotification(dispatch, "danger", [{ code: "0000", description: "Utente non autorizzato" }]);
+        return null;
+    }
+
+    //let ui = JSON.parse(usrIden);
+    let result = null;
+
+    //axios.defaults.headers.common['Authorization'] = `Bearer ${ui.token}`;
+    await axios.get(applicationDomain + `/api/Booking/GetBookingDates?VenueId=${venueId}`)
+        .then(response => {
+            if (response.status === 200) {
+                result = response.data;
+            }
+        })
+        .catch(error => {
+            if (!error.response) {
+                setNotification(dispatch, "danger", [{ code: "0000", description: "Impossibile connettersi al servizio web" }]);
+            }
+            else if (error.response.status === 401) {
+                setNotification(dispatch, "danger", [{ code: "0000", description: "Utente non autorizzato" }]);
+            }
+            else if (error.response.status === 500) {
+                setNotification(dispatch, "danger", [{ code: "0000", description: "Problemi interni al servizio web" }]);
+            }
+        });
+
+    return result;
+}
+
+const getBookingTimes = async (dispatch, venueId, date): Promise<string[] | null> => {
+    let usrIden = sessionStorage.getItem('user');
+    if (!usrIden) {
+        setNotification(dispatch, "danger", [{ code: "0000", description: "Utente non autorizzato" }]);
+        return null;
+    }
+
+    //let ui = JSON.parse(usrIden);
+    let result = null;
+
+    //axios.defaults.headers.common['Authorization'] = `Bearer ${ui.token}`;
+    await axios.get(applicationDomain + `/api/Booking/GetBookingTimes?VenueId=${venueId}&date=${date}`)
+        .then(response => {
+            if (response.status === 200) {
+                result = response.data;
+            }
+        })
+        .catch(error => {
+            if (!error.response) {
+                setNotification(dispatch, "danger", [{ code: "0000", description: "Impossibile connettersi al servizio web" }]);
+            }
+            else if (error.response.status === 401) {
+                setNotification(dispatch, "danger", [{ code: "0000", description: "Utente non autorizzato" }]);
+            }
+            else if (error.response.status === 500) {
+                setNotification(dispatch, "danger", [{ code: "0000", description: "Problemi interni al servizio web" }]);
+            }
+        });
+
+    return result;
+}
+
+const getVenues = async (dispatch): Promise<Venue[] | null> => {
+    let usrIden = sessionStorage.getItem('user');
+    if (!usrIden) {
+        setNotification(dispatch, "danger", [{ code: "0000", description: "Utente non autorizzato" }]);
+        return null;
+    }
+
+    //let ui = JSON.parse(usrIden);
+    let result = null;
+
+    //axios.defaults.headers.common['Authorization'] = `Bearer ${ui.token}`;
+    await axios.get(applicationDomain + `/api/Booking/GetVenues`)
+        .then(response => {
+            if (response.status === 200) {
+                result = response.data;
+            }
         })
         .catch(error => {
             if (!error.response) {
@@ -396,4 +493,4 @@ const deleteNotice = async (dispatch, noticeId) => {
     return result;
 }
 
-export { submitCompanyDocument, getAllCompanyDocuments, getCompanyDocument, getCompanyDocumentCategories, deleteCompanyDocument, submitNotice, getAllNotices, getNotice, deleteNotice, getAllNotices_mod };
+export { submitCompanyDocument, getAllCompanyDocuments, getCompanyDocument, getCompanyDocumentCategories, deleteCompanyDocument, submitNotice, getAllNotices, getNotice, deleteNotice, getAllNotices_mod, getVenues, getBookingDates, getBookingTimes };

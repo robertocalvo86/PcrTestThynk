@@ -50,5 +50,49 @@ namespace PcrTestAPI.Controllers
                 return StatusCode(500);
             }
         }
+
+        [HttpGet]
+        public async Task<ActionResult<List<string>>> GetBookingDates(int VenueId)
+        {
+            try
+            {
+                return await this.bookingDA.GetBookingDates(VenueId);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex.Message);
+                return StatusCode(500);
+            }
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<List<string>>> GetBookingTimes(int VenueId, string date)
+        {
+            try
+            {
+                return await this.bookingDA.GetBookingTimes(VenueId, date);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex.Message);
+                return StatusCode(500);
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> PostBooking(NewBooking newBooking)
+        {
+            try
+            {
+                await this.bookingDA.PostBooking(newBooking);
+
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex.Message);
+                return StatusCode(500);
+            }
+        }
     }
 }

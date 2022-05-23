@@ -5,15 +5,16 @@ import {
     FormGroup,
     Col,
     Form,
-    Row
+    Row,
+    Button
 }
     from 'reactstrap';
 
 import Select from 'react-select';
 
-import { SelectItem, AttachmentFileInfo, CompanyDocumentListItem, CompanyDocumentsFilters, UserIdentity } from '../interfaces';
+import { SelectItem, AttachmentFileInfo, CompanyDocumentListItem, CompanyDocumentsFilters, UserIdentity, SelectItemDate } from '../interfaces';
 import { setNotification } from '../service/IdentityUsers';
-import { submitCompanyDocument, getAllCompanyDocuments, getCompanyDocumentCategories, deleteCompanyDocument } from '../service/Companies';
+import { submitCompanyDocument, getAllCompanyDocuments, getCompanyDocumentCategories, getVenues, getBookingDates, getBookingTimes, deleteCompanyDocument } from '../service/Companies';
 
 const NewBooking = props => {
 
@@ -34,6 +35,12 @@ const NewBooking = props => {
 
     const [documentCategoriesSelect, setDocumentCategoriesSelect] = useState<Array<SelectItem> | null>(null);
     const [documentCategoryDdlValue, setDocumentCategoryDdlValue] = useState<SelectItem | null>(null);
+
+    const [bookingDatesSelect, setbookingDatesSelect] = useState<Array<SelectItemDate> | null>(null);
+    const [bookingDateDdlValue, setBookingDateDdlValue] = useState<SelectItem | null>(null);
+
+    const [bookingTimesSelect, setbookingTimesSelect] = useState<Array<SelectItemDate> | null>(null);
+    const [bookingTimeDdlValue, setBookingTimesDdlValue] = useState<SelectItem | null>(null);
 
     const [attachmentFileNameDisplayed, setAttachmentFileNameDisplayed] = useState("File...");
     const [attachmentFileInfo, setAttachmentFileInfo] = useState<AttachmentFileInfo | null>(null);
@@ -62,10 +69,10 @@ const NewBooking = props => {
 
     useEffect(() => {
         const myFunc = async () => {
-            let companyDocumentCategories = await getCompanyDocumentCategories(__dispatch);
+            let companyDocumentCategories = await getVenues(__dispatch);
             if (companyDocumentCategories) {
                 if (companyDocumentCategories.length !== 0) {
-                    let dataset = companyDocumentCategories.map((e) => { return { label: e.description, value: e.companyDocumentTypeId } });
+                    let dataset = companyDocumentCategories.map((e) => { return { label: `${e.code} - ${e.name}`, value: e.venueId } });
                     setDocumentCategoriesSelect(dataset);
                 }
 
@@ -93,6 +100,7 @@ const NewBooking = props => {
     const onSubmit = async (e) => {
         e.preventDefault();
 
+        /*
         if (documentName === "") {
             setNotification(__dispatch, "info", [{ code: "0000", description: "inserisci il Nome" }]);
             return;
@@ -118,13 +126,14 @@ const NewBooking = props => {
             setNotification(__dispatch, "info", [{ code: "0000", description: "caricare un documento pdf" }]);
             return;
         }
+        */
+
 
         let result = await submitCompanyDocument(__dispatch,
             {
-                file: attachmentFile,
-                name: documentName,
-                description: documentDescription,
-                companyDocumentTypeId: documentCategoryDdlValue.value
+                venue: documentCategoryDdlValue?.value,
+                date: bookingDateDdlValue?.value,
+                time: bookingTimeDdlValue?.value,
             });
         if (result) {
 
@@ -137,18 +146,49 @@ const NewBooking = props => {
             setDocumentName("");
             setDocumentDescription("");
             setDocumentCategoryDdlValue(null);
+            setBookingDateDdlValue(null);
+            setBookingTimesDdlValue(null);
             setAttachmentFileNameDisplayed("File...");
             setAttachmentFileInfo(null);
             setAttachmentFile("");
             toggleBtnNewCompanyDocument();
-            setNotification(__dispatch, "success", [{ code: "0000", description: "Modulo inserito" }]);
+            setNotification(__dispatch, "success", [{ code: "0000", description: "Booking Entered" }]);
         }
     }
 
 
-    const onDocumentCategoryChangeDdl = (ddlValue) => {
+    const onDocumentCategoryChangeDdl = async(ddlValue) => {  
+
+        let companyDocumentCategories = await getBookingDates(__dispatch, ddlValue.value);
+        if (companyDocumentCategories) {
+            console.log(companyDocumentCategories);
+           
+            let dataset = companyDocumentCategories.map((e) => { return { label: e, value: e } });
+            setbookingDatesSelect(dataset);
+        }
+
         setDocumentCategoryDdlValue(ddlValue);
     }
+
+    const onBookingDateChangeDdl = async(ddlValue) => {
+
+        let companyDocumentCategories = await getBookingTimes(__dispatch, documentCategoryDdlValue?.value, ddlValue.value);
+        if (companyDocumentCategories) {
+            console.log(companyDocumentCategories);
+ 
+            let dataset = companyDocumentCategories.map((e) => { return { label: e, value: e } });
+            setbookingTimesSelect(dataset);
+        }
+
+
+        
+        setBookingDateDdlValue(ddlValue);
+    }
+
+    const onBookingTimeChangeDdl = async(ddlValue) => {
+        setBookingTimesDdlValue(ddlValue);
+    }
+    
 
 
 
@@ -167,7 +207,8 @@ const NewBooking = props => {
                     <Form onSubmit={onSubmit}>
 
                         <FormGroup row className="my-0">
-                            <Col xs="12" sm="12" lg="7">
+
+                            <Col xs="12" sm="12" lg="4">
                                 <FormGroup>
                                     <div style={{ width: "250px", display: "inline-block", marginRight: "20px", marginTop: "10px" }}>
                                         <Select
@@ -191,7 +232,62 @@ const NewBooking = props => {
                                     </div>
                                 </FormGroup>
                             </Col>
+
+                            <Col xs="12" sm="12" lg="4">
+                                <FormGroup>
+                                    <div style={{ width: "250px", display: "inline-block", marginRight: "20px", marginTop: "10px" }}>
+                                        <Select
+                                            placeholder={"Date"}
+                                            noOptionsMessage={() => 'Nessuna opzione'}
+                                            value={bookingDateDdlValue}
+                                            onChange={onBookingDateChangeDdl}
+                                            options={bookingDatesSelect}
+                                            theme={theme => ({
+                                                ...theme,
+                                                borderRadius: 4,
+                                                colors: {
+                                                    ...theme.colors,
+                                                    primary25: '#DFEFFF',
+                                                    primary: 'hsl(0,0%,80%)',
+                                                    neutral20: '#e4e7ea',
+                                                    neutral30: '#e4e7ea'
+                                                },
+                                            })}
+                                        />
+                                    </div>
+                                </FormGroup>
+                            </Col>
+
+                            <Col xs="12" sm="12" lg="4">
+                                <FormGroup>
+                                    <div style={{ width: "250px", display: "inline-block", marginRight: "20px", marginTop: "10px" }}>
+                                        <Select
+                                            placeholder={"Time"}
+                                            noOptionsMessage={() => 'Nessuna opzione'}
+                                            value={bookingTimeDdlValue}
+                                            onChange={onBookingTimeChangeDdl}
+                                            options={bookingTimesSelect}
+                                            theme={theme => ({
+                                                ...theme,
+                                                borderRadius: 4,
+                                                colors: {
+                                                    ...theme.colors,
+                                                    primary25: '#DFEFFF',
+                                                    primary: 'hsl(0,0%,80%)',
+                                                    neutral20: '#e4e7ea',
+                                                    neutral30: '#e4e7ea'
+                                                },
+                                            })}
+                                        />
+                                    </div>
+                                </FormGroup>
+                            </Col>
                         </FormGroup>
+
+
+                        <br /><br />
+                            <Button type="submit" className="customButton">Submit</Button> {' '}
+                        
 
 {/** 
                         <Button type="submit" className="customButton">Inserisci</Button> {' '}

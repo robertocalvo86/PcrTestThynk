@@ -143,3 +143,14 @@ export interface BookingListItem {
 	result: string;
 	resultDate: string;
 }
+
+export interface Venue {
+	venueId: number;
+	code: string;
+	name: string;
+}
+
+export interface SelectItemDate {
+	label: string;
+	value: string;
+}
