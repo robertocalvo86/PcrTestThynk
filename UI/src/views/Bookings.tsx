@@ -114,7 +114,7 @@ const Bookings = props => {
                             <td>{data.venue}</td>
                             <td>{data.status}</td>
                             <td>{data.lastChange}</td>
-                            <td style={{ width: "20%" }}>{data.result}</td>
+                            <td >{data.result}</td>
                             <td>{data.resultDate}</td>
                             
                             <td>

@@ -305,6 +305,37 @@ const deleteCompanyDocument = async (dispatch, companyDocumentId) => {
     return result;
 }
 
+const setPCRTestResult = async (dispatch, bookingId, resultTypeId) => {
+    /*let usrIden = sessionStorage.getItem('user');
+    if (!usrIden) {
+        setNotification(dispatch, "danger", [{ code: "0000", description: "Utente non autorizzato" }]);
+        return false;
+    }
+
+    let ui = JSON.parse(usrIden);*/
+    let result = false;
+
+    //axios.defaults.headers.common['Authorization'] = `Bearer ${ui.token}`;
+    await axios.put(applicationDomain + `/api/BackOffice/SetPCRTestResult?bookingId=${bookingId}&resultTypeId=${resultTypeId}`)
+        .then(response => {
+            if (response.status === 204) {
+                result = true;
+            }
+        })
+        .catch(error => {
+            if (!error.response) {
+                setNotification(dispatch, "danger", [{ code: "0000", description: "Impossibile connettersi al servizio web" }]);
+            }
+            else if (error.response.status === 401) {
+                setNotification(dispatch, "danger", [{ code: "0000", description: "Utente non autorizzato" }]);
+            }
+            else if (error.response.status === 500) {
+                setNotification(dispatch, "danger", [{ code: "0000", description: "Problemi interni al servizio web" }]);
+            }
+        });
+    return result;
+}
+
 const submitNotice = async (dispatch, noticeDTO) => {
     let usrIden = sessionStorage.getItem('user');
     if (!usrIden) {
@@ -540,4 +571,4 @@ const deleteNotice = async (dispatch, noticeId) => {
     return result;
 }
 
-export { submitCompanyDocument, getAllCompanyDocuments, getCompanyDocument, getCompanyDocumentCategories, deleteCompanyDocument, submitNotice, getAllNotices, getNotice, deleteNotice, getAllNotices_mod, getVenues, getBookingDates, getBookingTimes, deleteBooking, getAllNotices_mod_backOffice };
+export { submitCompanyDocument, getAllCompanyDocuments, getCompanyDocument, getCompanyDocumentCategories, deleteCompanyDocument, submitNotice, getAllNotices, getNotice, deleteNotice, getAllNotices_mod, getVenues, getBookingDates, getBookingTimes, deleteBooking, getAllNotices_mod_backOffice, setPCRTestResult };

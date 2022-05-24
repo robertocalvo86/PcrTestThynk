@@ -7,13 +7,15 @@ import {
     ModalBody,
     ModalFooter,
     Label,
-    Table
+    Table,
+    Row,
+    Col
 }
     from 'reactstrap';
 
 import { NoticeListItem, NoticesFilters, UserIdentity, BookingListItem } from '../interfaces';
 import { setNotification } from '../service/IdentityUsers';
-import { deleteNotice, getAllNotices_mod, deleteBooking, getAllNotices_mod_backOffice } from '../service/Companies';
+import { deleteNotice, getAllNotices_mod, deleteBooking, getAllNotices_mod_backOffice, setPCRTestResult } from '../service/Companies';
 
 // You can see all icons here: https://icons.getbootstrap.com/
 import * as Icon from 'react-bootstrap-icons';
@@ -75,10 +77,10 @@ const BackOffice = props => {
         //eslint-disable-next-line
     }, []);
 
-    const onDeleteNotice = async (idx) => {
+    const onDeleteNotice = async (idx, resultTypeId) => {
         let companyDocument = NoticesStatemod[idx];
 
-        let result = await deleteBooking(__dispatch, companyDocument.bookingId);
+        let result = await setPCRTestResult(__dispatch, companyDocument.bookingId, resultTypeId);
         if (result) {
             let data = [...NoticesStatemod];
             data.splice(idx, 1);
@@ -89,62 +91,65 @@ const BackOffice = props => {
     }
 
     return (
-        <>
-            <span style={{ fontSize: "23px" }}>Bookings</span>
-            <hr />
-            <br />
+        <div style={{ padding: "50px" }}>
 
-            {NoticesStatemod.length > 0 && <>
-                <br />
-                <Table responsive bordered>
-                    <thead style={{ backgroundColor: "#EEEFEF" }}>
-                        <tr>
-                            <th>Date</th>
-                            <th>Venue</th>
-                            <th>Status</th>
-                            <th>LastChange</th>
-                            <th>Result</th>
-                            <th>ResultDate</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {NoticesStatemod.map((data, idx) => (<tr id={`tr_${idx}`} key={idx}>
-                            <td>{data.date}</td>
-                            <td>{data.venue}</td>
-                            <td>{data.status}</td>
-                            <td>{data.lastChange}</td>
-                            <td style={{ width: "20%" }}>{data.result}</td>
-                            <td>{data.resultDate}</td>
-                            
-                            <td>
-                                {/*<Button onClick={() => onDownloadAttachment(idx)} className="customButtonToDownload" style={{ paddingLeft: "20px", paddingRight: "20px", marginBottom: "5px" }} ><Icon.Download /></Button>*/}
-                                {data && data.status === 'OnGoing' && <>
-                                    {' '}<Button style={{ width: "100px", marginBottom: "5px" }} className="customButtonDanger" onClick={() => toggleBtnDeleteNoticeAndSaveIdx(idx)}><Icon.Trash style={{ verticalAlign: "-2px" }} />{' '}Delete</Button>
-                                 </>}
-                            </td>
-                           
-                        </tr>))
-                        }
-                    </tbody>
-                </Table>
-                <Modal isOpen={viewConfirmPopUp} toggle={toggleBtnDeleteNotice} backdrop="static">
-                    <ModalBody>
-                        <Label style={{ fontSize: 'medium' }}>
-                            <strong> Are you sure you want to delete the selected booking?</strong>
-                        </Label>
-                    </ModalBody>
-                    <ModalFooter>
-                        <Button className="customButtonDanger" onClick={() => onDeleteNotice(itemToDeleteIdx)} ><Icon.Trash style={{ verticalAlign: "-2px" }} />{' '}Delete</Button> {' '}
-                        <Button className="customButton" onClick={() => toggleBtnDeleteNotice(itemToDeleteIdx)} >Close</Button>
-                    </ModalFooter>
-                </Modal>
-            </>
-            }
-            {NoticesStatemod.length === 0 &&
-                <p>No bookings yet</p>
-            }
-        </>
+                    <span style={{ fontSize: "23px" }}>Bookings</span>
+                    <hr />
+                    <br />
+
+                    {NoticesStatemod.length > 0 && <>
+                        <br />
+                        <Table responsive bordered>
+                            <thead style={{ backgroundColor: "#EEEFEF" }}>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Venue</th>
+                                    <th>Status</th>
+                                    <th>LastChange</th>
+                                    <th>Result</th>
+                                    <th>ResultDate</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {NoticesStatemod.map((data, idx) => (<tr id={`tr_${idx}`} key={idx}>
+                                    <td>{data.date}</td>
+                                    <td>{data.venue}</td>
+                                    <td>{data.status}</td>
+                                    <td>{data.lastChange}</td>
+                                    <td>{data.result}</td>
+                                    <td>{data.resultDate}</td>
+
+                                    <td>
+                                        {/*<Button onClick={() => onDownloadAttachment(idx)} className="customButtonToDownload" style={{ paddingLeft: "20px", paddingRight: "20px", marginBottom: "5px" }} ><Icon.Download /></Button>*/}
+                                        {data && data.status === 'OnGoing' && <>
+                                            {' '}
+                                            <Button style={{margin:"0 auto", display:"block"}} className="customButton" onClick={() => toggleBtnDeleteNoticeAndSaveIdx(idx)}><Icon.PenFill style={{ verticalAlign: "-2px" }} />{' '}Result</Button>
+                                        </>}
+                                    </td>
+
+                                </tr>))
+                                }
+                            </tbody>
+                        </Table>
+                        <Modal isOpen={viewConfirmPopUp} toggle={toggleBtnDeleteNotice} backdrop="static">
+                            <ModalBody>
+                                <Label style={{ fontSize: 'medium' }}>
+                                    <strong>Set result of the PCR Test</strong>
+                                </Label>
+                            </ModalBody>
+                            <ModalFooter>
+                                <Button className="customButtonDanger" onClick={() => onDeleteNotice(itemToDeleteIdx, 1)} >Positive</Button> {' '}
+                                <Button className="customButton" onClick={() => onDeleteNotice(itemToDeleteIdx, 2)} >Negative</Button>
+                            </ModalFooter>
+                        </Modal>
+                    </>
+                    }
+                    {NoticesStatemod.length === 0 &&
+                        <p>No bookings yet</p>
+                    }
+
+        </div>
     );
 }
 

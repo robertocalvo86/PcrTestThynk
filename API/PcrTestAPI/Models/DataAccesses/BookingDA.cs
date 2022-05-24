@@ -49,9 +49,9 @@ namespace PcrTestAPI.Models.DataAccesses
                               Date = a.AllocationDate.ToString("dd/MM/yyyy HH:mm"),
                               Venue = v.Code + " - " + v.Name,
                               Status = s.Name,
-                              LastChange = b.ModifiedDate.ToString("dd/MM/yyyy"),
+                              LastChange = b.ModifiedDate.ToString("dd/MM/yyyy HH:mm"),
                               Result = k.Name,
-                              ResultDate = n.ResultDate.ToString("dd/MM/yyyy"),
+                              ResultDate = n.ResultDate.ToString("dd/MM/yyyy HH:mm"),
                           }).ToListAsync();
         }
 

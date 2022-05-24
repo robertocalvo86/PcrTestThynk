@@ -36,5 +36,20 @@ namespace PcrTestAPI.Controllers
                 return StatusCode(500);
             }
         }
+
+        [HttpPut]
+        public async Task<IActionResult> SetPCRTestResult(int bookingId, int resultTypeId)
+        {
+            try
+            {
+                await this.backOfficeDA.SetPCRTestResult(bookingId, resultTypeId);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex.Message);
+                return StatusCode(500);
+            }
+        }
     }
 }
