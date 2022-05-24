@@ -20,7 +20,7 @@ namespace PcrTestAPI.Models.Entities
         public int PcrTestBookingStatusId { get; set; }
         public PcrTestBookingStatus PcrTestBookingStatus { get; set; }
 
-        public int PcrTestResultId { get; set; }
+        public int? PcrTestResultId { get; set; }
         public PcrTestResult PcrTestResult { get; set; }
     }
 }

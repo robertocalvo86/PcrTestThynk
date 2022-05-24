@@ -35,21 +35,23 @@ namespace PcrTestAPI.Models.DataAccesses
             return await (from b in context.PcrTestBookings
                           join s in context.PcrTestBookingStatuses on b.PcrTestBookingStatusId equals s.PcrTestBookingStatusId
                           join a in context.PcrTestVenueAllocations on b.PcrTestVenueAllocationId equals a.PcrTestVenueAllocationId
-                          join r in context.PcrTestResults on b.PcrTestResultId equals r.PcrTestResultId
+                          join r in context.PcrTestResults on b.PcrTestResultId equals r.PcrTestResultId into ptr
+                          from n in ptr.DefaultIfEmpty()
+                          join rt in context.PcrTestResultTypes on n.PcrTestResultTypeId equals rt.PcrTestResultTypeId into ptrt
+                          from k in ptrt.DefaultIfEmpty()
                           join v in context.PcrTestVenues on a.PcrTestVenueId equals v.PcrTestVenueId
-                          join rt in context.PcrTestResultTypes on r.PcrTestResultTypeId equals rt.PcrTestResultTypeId
 
                           where b.IdentityCardNumber == IdentityCardNumber
 
                           select new Booking
                           {
                               BookingId = b.PcrTestBookingId,
-                              Date = a.AllocationDate.ToString("dd/MM/yyyy"),
+                              Date = a.AllocationDate.ToString("dd/MM/yyyy HH:mm"),
                               Venue = v.Code + " - " + v.Name,
                               Status = s.Name,
                               LastChange = b.ModifiedDate.ToString("dd/MM/yyyy"),
-                              Result = rt.Name,
-                              ResultDate = r.ResultDate.ToString("dd/MM/yyyy"),
+                              Result = k.Name,
+                              ResultDate = n.ResultDate.ToString("dd/MM/yyyy"),
                           }).ToListAsync();
         }
 
@@ -161,24 +163,16 @@ namespace PcrTestAPI.Models.DataAccesses
                 PcrTestVenueId = newBooking.Venue
             };
 
-            PcrTestResult pcrTestResult = new PcrTestResult
-            {
-                ResultDate = DateTime.Now,
-                PcrTestResultTypeId = 2 //Negative
-            };
-
             PcrTestBooking technicalExpertAttachmentInfo = new PcrTestBooking
             {
                 IdentityCardNumber = newBooking.IdentityCardNumber,
                 CreatedDate = DateTime.Now,
                 ModifiedDate = DateTime.Now,
                 PcrTestVenueAllocation = pcrTestVenueAllocation,
-                PcrTestBookingStatusId = 1, //OnGoing
-                PcrTestResult = pcrTestResult
+                PcrTestBookingStatusId = 1 //OnGoing
             };
 
             context.Set<PcrTestBooking>().Add(technicalExpertAttachmentInfo);
-            //context.PcrTestBookings.Add(technicalExpertAttachmentInfo);
             await context.SaveChangesAsync();
         }
 
@@ -187,10 +181,8 @@ namespace PcrTestAPI.Models.DataAccesses
             PcrTestBooking pcrTestBooking = await context.Set<PcrTestBooking>().Where(cd => cd.PcrTestBookingId == BookingId).SingleOrDefaultAsync();
 
             PcrTestVenueAllocation pcrTestVenueAllocation = await context.Set<PcrTestVenueAllocation>().Where(cd => cd.PcrTestVenueAllocationId == pcrTestBooking.PcrTestVenueAllocationId).SingleOrDefaultAsync();
-            PcrTestResult pcrTestResult = await context.Set<PcrTestResult>().Where(cd => cd.PcrTestResultId == pcrTestBooking.PcrTestResultId).SingleOrDefaultAsync();
 
             context.Set<PcrTestVenueAllocation>().Remove(pcrTestVenueAllocation);
-            context.Set<PcrTestResult>().Remove(pcrTestResult);
             context.Set<PcrTestBooking>().Remove(pcrTestBooking);
 
             return await context.SaveChangesAsync();

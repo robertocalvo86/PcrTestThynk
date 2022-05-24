@@ -89,7 +89,8 @@ namespace PcrTestAPI
                 //options.Password.RequiredUniqueChars = 3;
             });
 
-            services.AddScoped<BookingDA>();
+            services.AddScoped<BookingDA>()
+                    .AddScoped<BackOfficeDA>();
 
             services.AddSwaggerGen(c =>
             {

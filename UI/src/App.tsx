@@ -9,6 +9,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 
 const Home = React.lazy(() => import('./container/Home'));
 const Login = React.lazy(() => import('./pages/Login'));
+const BackOffice = React.lazy(() => import('./pages/Backoffice'));
 
 const Alert = React.lazy(() => import('./popUps/Alert'));
 
@@ -26,6 +27,7 @@ const App = () => {
         <Alert />
         <Switch>
           <Route exact path="/login" render={props => <Login {...props} />} />
+          <Route exact path="/backoffice" render={props => <BackOffice {...props} />} />
           <Route path="/" render={props => <Home {...props} />} />
         </Switch>
       </React.Suspense>

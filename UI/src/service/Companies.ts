@@ -339,6 +339,43 @@ const submitNotice = async (dispatch, noticeDTO) => {
     return result;
 }
 
+const getAllNotices_mod_backOffice = async (dispatch, noticesFilters): Promise<Array<BookingListItem> | null> => {
+    /*let usrIden = sessionStorage.getItem('user');
+    if (!usrIden) {
+        alert("stop qui");
+        setNotification(dispatch, "danger", [{ code: "0000", description: "Utente non autorizzato" }]);
+        return null;
+    }
+
+    let ui = JSON.parse(usrIden);*/
+
+    let result = null;
+
+    
+    await axios.get(applicationDomain + `/api/BackOffice/GetBookings`)
+        .then(response => {
+            if (response.status === 200) {
+                result = response.data;
+            }
+        })
+        .catch(error => {
+            if (!error.response) {
+                setNotification(dispatch, "danger", [{code: "0000", description:"Impossibile connettersi al servizio web"}]);
+            }
+            else if (error.response.status === 400) {
+                setNotification("info", error.response.data);
+            }
+            else if (error.response.status === 401) {
+                setNotification(dispatch, "info", [{code: "0000", description:"Username e/o Password non valide"}]);
+            }
+            else if (error.response.status === 500) {
+                setNotification(dispatch, "danger", [{code: "0000", description:"Problemi interni al servizio web"}]);
+            }
+        });
+        
+    return result;
+}
+
 const getAllNotices_mod = async (dispatch, noticesFilters): Promise<Array<BookingListItem> | null> => {
     let usrIden = sessionStorage.getItem('user');
     if (!usrIden) {
@@ -373,28 +410,6 @@ const getAllNotices_mod = async (dispatch, noticesFilters): Promise<Array<Bookin
             }
         });
 
-    /*
-    
-
-    axios.defaults.headers.common['Authorization'] = `Bearer ${ui.token}`;
-    await axios.get(`https://localhost:44393/api/Company/GetAllNotices?noticesFilters=${JSON.stringify(noticesFilters)}`)
-        .then(response => {
-            if (response.status === 200) {
-                result = response.data;
-            }
-        })
-        .catch(error => {
-            if (!error.response) {
-                setNotification(dispatch, "danger", [{ code: "0000", description: "Impossibile connettersi al servizio web" }]);
-            }
-            else if (error.response.status === 401) {
-                setNotification(dispatch, "danger", [{ code: "0000", description: "Utente non autorizzato" }]);
-            }
-            else if (error.response.status === 500) {
-                setNotification(dispatch, "danger", [{ code: "0000", description: "Problemi interni al servizio web" }]);
-            }
-        });
-*/
     return result;
 }
 //
@@ -525,4 +540,4 @@ const deleteNotice = async (dispatch, noticeId) => {
     return result;
 }
 
-export { submitCompanyDocument, getAllCompanyDocuments, getCompanyDocument, getCompanyDocumentCategories, deleteCompanyDocument, submitNotice, getAllNotices, getNotice, deleteNotice, getAllNotices_mod, getVenues, getBookingDates, getBookingTimes, deleteBooking };
+export { submitCompanyDocument, getAllCompanyDocuments, getCompanyDocument, getCompanyDocumentCategories, deleteCompanyDocument, submitNotice, getAllNotices, getNotice, deleteNotice, getAllNotices_mod, getVenues, getBookingDates, getBookingTimes, deleteBooking, getAllNotices_mod_backOffice };

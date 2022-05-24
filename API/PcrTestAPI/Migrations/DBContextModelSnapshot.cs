@@ -38,7 +38,7 @@ namespace PcrTestAPI.Migrations
                     b.Property<int>("PcrTestBookingStatusId")
                         .HasColumnType("int");
 
-                    b.Property<int>("PcrTestResultId")
+                    b.Property<int?>("PcrTestResultId")
                         .HasColumnType("int");
 
                     b.Property<int>("PcrTestVenueAllocationId")
@@ -243,9 +243,7 @@ namespace PcrTestAPI.Migrations
 
                     b.HasOne("PcrTestAPI.Models.Entities.PcrTestResult", "PcrTestResult")
                         .WithMany("PcrTestBooking")
-                        .HasForeignKey("PcrTestResultId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("PcrTestResultId");
 
                     b.HasOne("PcrTestAPI.Models.Entities.PcrTestVenueAllocation", "PcrTestVenueAllocation")
                         .WithMany("PcrTestBooking")
