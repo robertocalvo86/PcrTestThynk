@@ -7,15 +7,13 @@ import {
     ModalBody,
     ModalFooter,
     Label,
-    Table,
-    Row,
-    Col
+    Table
 }
     from 'reactstrap';
 
-import { NoticeListItem, NoticesFilters, UserIdentity, BookingListItem } from '../interfaces';
-import { setNotification } from '../service/IdentityUsers';
-import { deleteNotice, getAllNotices_mod, deleteBooking, getAllNotices_mod_backOffice, setPCRTestResult } from '../service/Companies';
+import { BookingListItem } from '../interfaces';
+import { setNotification } from '../utils';
+import { getBookings, setPCRTestResult } from '../service/BackOffice';
 
 // You can see all icons here: https://icons.getbootstrap.com/
 import * as Icon from 'react-bootstrap-icons';
@@ -24,14 +22,9 @@ const BackOffice = props => {
 
     const __dispatch = useDispatch();
 
-    const [usrIden, setUsrIden] = useState<UserIdentity | null>(null);
-
     //eslint-disable-next-line
-    const [filters, setFilters] = useState<NoticesFilters>({ pageNumber: 0 });
 
-    const [NoticesState, setNoticesState] = useState<Array<NoticeListItem>>([]);
-    const [NoticesStatemod, setNoticesStatemod] = useState<Array<BookingListItem>>([]);
-
+    const [Bookings, setBookings] = useState<Array<BookingListItem>>([]);
 
     const [viewConfirmPopUp, setViewConfirmPopUp] = useState(false);
     const [itemToDeleteIdx, setItemToDeleteIdx] = useState(-1);
@@ -58,33 +51,24 @@ const BackOffice = props => {
 
     useEffect(() => {
         const myFunc = async () => {
-            let noticeList = await getAllNotices_mod_backOffice(__dispatch, filters);
-            if (noticeList) {
-                setNoticesStatemod(noticeList);
+            let bookingList = await getBookings(__dispatch);
+            if (bookingList) {
+                setBookings(bookingList);
             }
-        }
-
-        document.title = "Pcr Test Bookings";
-
-        let usrIdenObject = null;
-        let usrIden = sessionStorage.getItem('user');
-        if (usrIden) {
-            usrIdenObject = JSON.parse(usrIden);
-            setUsrIden(usrIdenObject);
         }
 
         myFunc();
         //eslint-disable-next-line
     }, []);
 
-    const onDeleteNotice = async (idx, resultTypeId) => {
-        let companyDocument = NoticesStatemod[idx];
+    const onSetPCRTestResult = async (idx, resultTypeId) => {
+        let companyDocument = Bookings[idx];
 
         let result = await setPCRTestResult(__dispatch, companyDocument.bookingId, resultTypeId);
         if (result) {
-            let data = [...NoticesStatemod];
+            let data = [...Bookings];
             data.splice(idx, 1);
-            setNoticesStatemod(data);
+            setBookings(data);
             toggleBtnDeleteNotice(idx);
             setNotification(__dispatch, "success", [{ code: "0000", description: "Booking Deleted Succesfully" }]);
         }
@@ -97,7 +81,7 @@ const BackOffice = props => {
                     <hr />
                     <br />
 
-                    {NoticesStatemod.length > 0 && <>
+                    {Bookings.length > 0 && <>
                         <br />
                         <Table responsive bordered>
                             <thead style={{ backgroundColor: "#EEEFEF" }}>
@@ -112,7 +96,7 @@ const BackOffice = props => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {NoticesStatemod.map((data, idx) => (<tr id={`tr_${idx}`} key={idx}>
+                                {Bookings.map((data, idx) => (<tr id={`tr_${idx}`} key={idx}>
                                     <td>{data.date}</td>
                                     <td>{data.venue}</td>
                                     <td>{data.status}</td>
@@ -139,13 +123,13 @@ const BackOffice = props => {
                                 </Label>
                             </ModalBody>
                             <ModalFooter>
-                                <Button className="customButtonDanger" onClick={() => onDeleteNotice(itemToDeleteIdx, 1)} >Positive</Button> {' '}
-                                <Button className="customButton" onClick={() => onDeleteNotice(itemToDeleteIdx, 2)} >Negative</Button>
+                                <Button className="customButtonDanger" onClick={() => onSetPCRTestResult(itemToDeleteIdx, 1)} >Positive</Button> {' '}
+                                <Button className="customButton" onClick={() => onSetPCRTestResult(itemToDeleteIdx, 2)} >Negative</Button>
                             </ModalFooter>
                         </Modal>
                     </>
                     }
-                    {NoticesStatemod.length === 0 &&
+                    {Bookings.length === 0 &&
                         <p>No bookings yet</p>
                     }
 

@@ -9,7 +9,7 @@ import {
   ModalFooter
 } from 'reactstrap';
 
-import { setNotification } from '../service/IdentityUsers';
+import { setNotification } from '../utils';
 
 const Alert = () => {
 

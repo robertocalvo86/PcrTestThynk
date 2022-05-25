@@ -22,7 +22,7 @@ import { deepOrange, green, orange, amber, lime, lightGreen } from '@material-ui
 
 import { Redirect, Route, Switch, Link } from 'react-router-dom';
 
-import { _logout } from '../service/IdentityUsers';
+import { _logout } from '../utils';
 
 import routes from '../routes';
 

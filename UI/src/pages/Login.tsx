@@ -15,7 +15,7 @@ from 'reactstrap';
 
 import * as Icon from 'react-bootstrap-icons';
 
-import { setNotification } from '../service/IdentityUsers';
+import { setNotification } from '../utils';
 
 import { Redirect } from 'react-router-dom';
 

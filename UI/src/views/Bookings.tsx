@@ -11,9 +11,9 @@ import {
 }
     from 'reactstrap';
 
-import { NoticeListItem, NoticesFilters, UserIdentity, BookingListItem } from '../interfaces';
-import { setNotification } from '../service/IdentityUsers';
-import { deleteNotice, getAllNotices_mod, deleteBooking } from '../service/Companies';
+import { BookingListItem } from '../interfaces';
+import { setNotification } from '../utils';
+import { getBookingsByIdentityCardNumber, deleteBooking } from '../service/Booking';
 
 // You can see all icons here: https://icons.getbootstrap.com/
 import * as Icon from 'react-bootstrap-icons';
@@ -22,21 +22,15 @@ const Bookings = props => {
 
     const __dispatch = useDispatch();
 
-    const [usrIden, setUsrIden] = useState<UserIdentity | null>(null);
-
     //eslint-disable-next-line
-    const [filters, setFilters] = useState<NoticesFilters>({ pageNumber: 0 });
 
-    const [NoticesState, setNoticesState] = useState<Array<NoticeListItem>>([]);
-    const [NoticesStatemod, setNoticesStatemod] = useState<Array<BookingListItem>>([]);
-
+    const [Bookings, setBookings] = useState<Array<BookingListItem>>([]);
 
     const [viewConfirmPopUp, setViewConfirmPopUp] = useState(false);
     const [itemToDeleteIdx, setItemToDeleteIdx] = useState(-1);
     const [itemToDeleteRowColor, setItemToDeleteRowColor] = useState("");
 
-
-    const toggleBtnDeleteNotice = (idx) => {
+    const toggleBtnDeleteBooking = (idx) => {
         setViewConfirmPopUp(!viewConfirmPopUp);
 
         let tr = document.getElementById(`tr_${idx}`);
@@ -56,34 +50,25 @@ const Bookings = props => {
 
     useEffect(() => {
         const myFunc = async () => {
-            let noticeList = await getAllNotices_mod(__dispatch, filters);
-            if (noticeList) {
-                setNoticesStatemod(noticeList);
+            let bookingList = await getBookingsByIdentityCardNumber(__dispatch);
+            if (bookingList) {
+                setBookings(bookingList);
             }
-        }
-
-        document.title = "Pcr Test Bookings";
-
-        let usrIdenObject = null;
-        let usrIden = sessionStorage.getItem('user');
-        if (usrIden) {
-            usrIdenObject = JSON.parse(usrIden);
-            setUsrIden(usrIdenObject);
         }
 
         myFunc();
         //eslint-disable-next-line
     }, []);
 
-    const onDeleteNotice = async (idx) => {
-        let companyDocument = NoticesStatemod[idx];
+    const onDeleteBooking = async (idx) => {
+        let companyDocument = Bookings[idx];
 
         let result = await deleteBooking(__dispatch, companyDocument.bookingId);
         if (result) {
-            let data = [...NoticesStatemod];
+            let data = [...Bookings];
             data.splice(idx, 1);
-            setNoticesStatemod(data);
-            toggleBtnDeleteNotice(idx);
+            setBookings(data);
+            toggleBtnDeleteBooking(idx);
             setNotification(__dispatch, "success", [{ code: "0000", description: "Booking Deleted Succesfully" }]);
         }
     }
@@ -94,7 +79,7 @@ const Bookings = props => {
             <hr />
             <br />
 
-            {NoticesStatemod.length > 0 && <>
+            {Bookings.length > 0 && <>
                 <br />
                 <Table responsive bordered>
                     <thead style={{ backgroundColor: "#EEEFEF" }}>
@@ -109,39 +94,37 @@ const Bookings = props => {
                         </tr>
                     </thead>
                     <tbody>
-                        {NoticesStatemod.map((data, idx) => (<tr id={`tr_${idx}`} key={idx}>
+                        {Bookings.map((data, idx) => (<tr id={`tr_${idx}`} key={idx}>
                             <td>{data.date}</td>
                             <td>{data.venue}</td>
                             <td>{data.status}</td>
                             <td>{data.lastChange}</td>
                             <td >{data.result}</td>
                             <td>{data.resultDate}</td>
-                            
                             <td>
-                                {/*<Button onClick={() => onDownloadAttachment(idx)} className="customButtonToDownload" style={{ paddingLeft: "20px", paddingRight: "20px", marginBottom: "5px" }} ><Icon.Download /></Button>*/}
                                 {data && data.status === 'OnGoing' && <>
                                     {' '}<Button style={{ width: "100px", marginBottom: "5px" }} className="customButtonDanger" onClick={() => toggleBtnDeleteNoticeAndSaveIdx(idx)}><Icon.Trash style={{ verticalAlign: "-2px" }} />{' '}Delete</Button>
-                                 </>}
+                                </>}
                             </td>
-                           
+
                         </tr>))
                         }
                     </tbody>
                 </Table>
-                <Modal isOpen={viewConfirmPopUp} toggle={toggleBtnDeleteNotice} backdrop="static">
+                <Modal isOpen={viewConfirmPopUp} toggle={toggleBtnDeleteBooking} backdrop="static">
                     <ModalBody>
                         <Label style={{ fontSize: 'medium' }}>
                             <strong> Are you sure you want to delete the selected booking?</strong>
                         </Label>
                     </ModalBody>
                     <ModalFooter>
-                        <Button className="customButtonDanger" onClick={() => onDeleteNotice(itemToDeleteIdx)} ><Icon.Trash style={{ verticalAlign: "-2px" }} />{' '}Delete</Button> {' '}
-                        <Button className="customButton" onClick={() => toggleBtnDeleteNotice(itemToDeleteIdx)} >Close</Button>
+                        <Button className="customButtonDanger" onClick={() => onDeleteBooking(itemToDeleteIdx)} ><Icon.Trash style={{ verticalAlign: "-2px" }} />{' '}Delete</Button> {' '}
+                        <Button className="customButton" onClick={() => toggleBtnDeleteBooking(itemToDeleteIdx)} >Close</Button>
                     </ModalFooter>
                 </Modal>
             </>
             }
-            {NoticesStatemod.length === 0 &&
+            {Bookings.length === 0 &&
                 <p>No bookings yet</p>
             }
         </>
